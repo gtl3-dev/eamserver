@@ -1,0 +1,184 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model accounts {
+  id                Int     @id @default(autoincrement())
+  userId            Int
+  type              String  @db.VarChar(255)
+  provider          String  @db.VarChar(255)
+  providerAccountId String  @db.VarChar(255)
+  refresh_token     String?
+  access_token      String?
+  expires_at        BigInt?
+  id_token          String?
+  scope             String?
+  session_state     String?
+  token_type        String?
+}
+
+model sessions {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  expires      DateTime @db.Timestamptz(6)
+  sessionToken String   @db.VarChar(255)
+}
+
+model transactionlog {
+  tlogid          Int        @id @default(autoincrement())
+  companyidkey    String?    @db.VarChar(40)
+  requestid       Int        @default(autoincrement())
+  transactiontype transtype?
+  transactioncrud crudtype?
+  dbacct          String?    @db.VarChar(40)
+  cdacct          String?    @db.VarChar(40)
+  dbamt           Decimal?   @db.Decimal(15, 2)
+  cdamt           Decimal?   @db.Decimal(15, 2)
+  curr            String?    @db.Char(3)
+  transact_dttz   DateTime?  @default(now()) @db.Timestamptz(6)
+}
+
+model users {
+  id            Int       @id @default(autoincrement())
+  name          String?   @db.VarChar(255)
+  email         String?   @db.VarChar(255)
+  emailVerified DateTime? @db.Timestamptz(6)
+  image         String?
+}
+
+model verification_token {
+  identifier String
+  expires    DateTime @db.Timestamptz(6)
+  token      String
+
+  @@id([identifier, token])
+}
+
+model company {
+  companyid                      Int       @unique @default(autoincrement()) @db.SmallInt
+  companykey                     String    @db.Uuid
+  companyshortname               String?   @db.VarChar(30)
+  companylongname                String?   @db.VarChar(100)
+  companyemail                   String?   @db.VarChar(100)
+  companywebsite                 String?   @db.VarChar(100)
+  companycurr                    String?   @db.Char(3)
+  companyaddressstreet1          String?   @db.VarChar(50)
+  companyaddressstreet2          String?   @db.VarChar(50)
+  companyaddressunit             String?   @db.VarChar(10)
+  companyaddresscity             String?   @db.VarChar(50)
+  companyaddresscountry          String?   @db.VarChar(50)
+  companyaddresspostalcode       String?   @db.VarChar(10)
+  companybilltoaddressstreet1    String?   @db.VarChar(50)
+  companybilltoaddressstreet2    String?   @db.VarChar(50)
+  companybilltoaddressunit       String?   @db.VarChar(10)
+  companybilltoaddresscity       String?   @db.VarChar(50)
+  companybilltoaddresscountry    String?   @db.VarChar(50)
+  companybilltoaddresspostalcode String?   @db.VarChar(10)
+  companyshiptoaddressstreet1    String?   @db.VarChar(50)
+  companyshiptoaddressstreet2    String?   @db.VarChar(50)
+  companyshiptoaddressunit       String?   @db.VarChar(10)
+  companyshiptoaddresscity       String?   @db.VarChar(50)
+  companyshiptoaddresscountry    String?   @db.VarChar(50)
+  companyshiptoaddresspostalcode String?   @db.VarChar(10)
+  contactperson1lname            String?   @db.VarChar(30)
+  contactperson1fname            String?   @db.VarChar(30)
+  contactperson1mname            String?   @db.VarChar(30)
+  contactperson1salutation       String?   @db.VarChar(5)
+  contactperson1contactinfo      String?   @db.VarChar(50)
+  contactperson2lname            String?   @db.VarChar(30)
+  contactperson2fname            String?   @db.VarChar(30)
+  contactperson2mname            String?   @db.VarChar(30)
+  contactperson2salutation       String?   @db.VarChar(5)
+  contactperson2contactinfo      String?   @db.VarChar(50)
+  contactperson3lname            String?   @db.VarChar(30)
+  contactperson3fname            String?   @db.VarChar(30)
+  contactperson3mname            String?   @db.VarChar(30)
+  contactpersonsalutation        String?   @db.VarChar(5)
+  contactperson3contactinfo      String?   @db.VarChar(50)
+  contactemail1                  String?   @db.VarChar(30)
+  contactemail2                  String?   @db.VarChar(30)
+  contactemail3                  String?   @db.VarChar(30)
+  contactnumber1                 String?   @db.VarChar(30)
+  contactnumber2                 String?   @db.VarChar(30)
+  contactnumber3                 String?   @db.VarChar(30)
+  companycustom1                 String?   @db.VarChar(40)
+  companycustom2                 String?   @db.VarChar(40)
+  rec_create_dttz                DateTime? @default(now()) @db.Timestamptz(6)
+  rec_modified_dttz              DateTime? @db.Timestamptz(6)
+  rec_create_proc                String?   @db.VarChar(50)
+  rec_notes                      String?   @db.VarChar(200)
+
+  @@id([companyid, companykey])
+}
+
+model assettypes {
+  assettypesid      Int       @id @default(autoincrement())
+  companyidkey      String?   @db.VarChar(40)
+  shortname         String?   @db.VarChar(40)
+  longname          String?   @db.VarChar(100)
+  assettypescustom1 String?   @db.VarChar(40)
+  assettypescustom2 String?   @db.VarChar(40)
+  assettypescustom3 String?   @db.VarChar(40)
+  assettypescustom4 String?   @db.VarChar(40)
+  assettypescustom5 String?   @db.VarChar(40)
+  rec_create_dttz   DateTime? @default(now()) @db.Timestamptz(6)
+  rec_modified_dttz DateTime? @db.Timestamptz(6)
+  rec_create_proc   String?   @db.VarChar(50)
+  rec_notes         String?   @db.VarChar(200)
+}
+
+model assetgrps {
+  assetgrpsid       Int       @id @default(autoincrement())
+  companyidkey      String?   @db.VarChar(40)
+  shortname         String?   @db.VarChar(40)
+  longname          String?   @db.VarChar(100)
+  assetgrpscustom1  String?   @db.VarChar(40)
+  assetgrpscustom2  String?   @db.VarChar(40)
+  assetgrpscustom3  String?   @db.VarChar(40)
+  assetgrpscustom4  String?   @db.VarChar(40)
+  assetgrpscustom5  String?   @db.VarChar(40)
+  rec_create_dttz   DateTime? @default(now()) @db.Timestamptz(6)
+  rec_modified_dttz DateTime? @db.Timestamptz(6)
+  rec_create_proc   String?   @db.VarChar(50)
+  rec_notes         String?   @db.VarChar(200)
+}
+
+model location {
+  locationid        Int       @id @default(autoincrement())
+  companyidkey      String?   @db.VarChar(40)
+  locationname      String?   @db.VarChar(40)
+  locationstateprov String?   @db.VarChar(40)
+  locationcity      String?   @db.VarChar(40)
+  locationtown      String?   @db.VarChar(40)
+  lat               Float?
+  long              Float?
+  locationgrp       String?   @db.VarChar(40)
+  locationcat       String?   @db.VarChar(40)
+  locationcustom1   String?   @db.VarChar(40)
+  locationcustom2   String?   @db.VarChar(40)
+  rec_create_dttz   DateTime? @default(now()) @db.Timestamptz(6)
+  rec_modified_dttz DateTime? @db.Timestamptz(6)
+  rec_create_proc   String?   @db.VarChar(50)
+  rec_notes         String?   @db.VarChar(200)
+}
+
+enum crudtype {
+  Create
+  Read
+  Update
+  Delete
+}
+
+enum transtype {
+  Company
+  Asset
+  User
+  Vendor
+  Order
+  Location
+}
