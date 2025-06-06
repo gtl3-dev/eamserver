@@ -8,11 +8,11 @@ datasource db {
 }
 
 model accounts {
-  id                Int     @id @default(autoincrement())
+  id                Int      @id @default(autoincrement())
   userId            Int
-  type              String  @db.VarChar(255)
-  provider          String  @db.VarChar(255)
-  providerAccountId String  @db.VarChar(255)
+  type              String   @db.VarChar(255)
+  provider          String   @db.VarChar(255)
+  providerAccountId String   @db.VarChar(255)
   refresh_token     String?
   access_token      String?
   expires_at        BigInt?
@@ -20,6 +20,7 @@ model accounts {
   scope             String?
   session_state     String?
   token_type        String?
+  active            Boolean?
 }
 
 model sessions {
@@ -49,6 +50,7 @@ model users {
   email         String?   @db.VarChar(255)
   emailVerified DateTime? @db.Timestamptz(6)
   image         String?
+  active        Boolean?
 }
 
 model verification_token {
@@ -112,6 +114,7 @@ model company {
   rec_modified_dttz              DateTime? @db.Timestamptz(6)
   rec_create_proc                String?   @db.VarChar(50)
   rec_notes                      String?   @db.VarChar(200)
+  active                         Boolean?
 
   @@id([companyid, companykey])
 }
@@ -130,6 +133,7 @@ model assettypes {
   rec_modified_dttz DateTime? @db.Timestamptz(6)
   rec_create_proc   String?   @db.VarChar(50)
   rec_notes         String?   @db.VarChar(200)
+  active            Boolean?
 }
 
 model assetgrps {
@@ -146,6 +150,7 @@ model assetgrps {
   rec_modified_dttz DateTime? @db.Timestamptz(6)
   rec_create_proc   String?   @db.VarChar(50)
   rec_notes         String?   @db.VarChar(200)
+  active            Boolean?
 }
 
 model location {
@@ -155,6 +160,7 @@ model location {
   locationstateprov String?   @db.VarChar(40)
   locationcity      String?   @db.VarChar(40)
   locationtown      String?   @db.VarChar(40)
+  locationpostal    String?   @db.VarChar(10)
   lat               Float?
   long              Float?
   locationgrp       String?   @db.VarChar(40)
@@ -165,6 +171,7 @@ model location {
   rec_modified_dttz DateTime? @db.Timestamptz(6)
   rec_create_proc   String?   @db.VarChar(50)
   rec_notes         String?   @db.VarChar(200)
+  active            Boolean?
 }
 
 enum crudtype {

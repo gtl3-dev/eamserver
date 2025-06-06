@@ -6,12 +6,9 @@ import express from 'express';
 const router = express.Router();
 
 router.get('/', async(req, res) => {
-    const { cidkey } = req.body;
 try {
         const assetgrps = await prisma.assetgrps.findMany({
-            where: {
-                companyidkey: cidkey
-            }
+            where: { active: true }
         });
         res.status(200).json(assetgrps)
     } catch (error) {
@@ -21,11 +18,11 @@ try {
 
  router.get('/:id', async(req, res) => {
     const { id } = req.params;
-    const { cidkey } = req.body;
+    // const { companyidkey } = req.body;
     try {
         const assetgrps = await prisma.assetgrps.findFirst({
             where: {
-                companyidkey: cidkey,
+                // companyidkey: companyidkey,
                 assetgrpsid: Number(id)
             }
         });
@@ -45,6 +42,7 @@ try {
                 companyidkey: myassetgrps.companyidkey,
                 shortname: myassetgrps.shortname,
                 longname: myassetgrps.longname,
+                active: true,
             }
         });
         res.status(200).json(assetgrps)
@@ -55,17 +53,16 @@ try {
 
  router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const {cidkey, shortname, longname } = req.body;
+    const {companyidkey, shortname, longname } = req.body;
     try {
-        const assettype = await prisma.assetgrps.update({
-        where: {  assetgrpsid: Number(id),
-                    companyidkey: cidkey,
+        const assetgrp = await prisma.assetgrps.update({
+        where: {  assetgrpsid: Number(id)
         },
         data: {   shortname: shortname,
                     longname: longname
         },
         })
-        res.json(assettype)
+        res.json(assetgrp)
     } catch (error) {
         res.status(400).json({error});
     }
@@ -73,15 +70,16 @@ try {
 
  router.delete('/:id', async (req, res) => {
     const { id } = req.params
-    const { cidkey } = req.body;
+    // const { companyidkey } = req.body;
     try {
-        const assettype = await prisma.assetgrps.delete({
+        const assetgrp = await prisma.assetgrps.update({
             where: {
             assetgrpsid: Number(id),
-            companyidkey: cidkey,
+            // companyidkey: companyidkey,
             },
+            data: { active: false }
         })
-        res.json(assettype)
+        res.json(assetgrp)
     } catch (error) {
         res.status(400).json({error});
     }
